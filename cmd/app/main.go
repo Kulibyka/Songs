@@ -36,6 +36,7 @@ func main() {
 	addr := ":8080"
 	log.Info("Starting server", slog.String("addr", addr))
 	if err := http.ListenAndServe(addr, router); err != nil {
+		log.Debug("error starting server", slog.String("addr", addr))
 		panic(err)
 	}
 
