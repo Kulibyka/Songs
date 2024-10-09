@@ -142,12 +142,12 @@ func (s *Storage) GetSongsWithFilter(filter models.SongFilter) ([]models.Song, e
 	const op = "storage.postgresql.GetSongsWithFilter"
 
 	query := "SELECT id, group_name, song, release_date, text, link, created_at FROM songs WHERE 1=1"
-	args := []interface{}{}
+	var args []interface{}
 	argID := 1
 
-	if filter.Group != "" {
+	if filter.GroupName != "" {
 		query += fmt.Sprintf(" AND group_name = $%d", argID)
-		args = append(args, filter.Group)
+		args = append(args, filter.GroupName)
 		argID++
 	}
 	if filter.Song != "" {
