@@ -125,7 +125,6 @@ func (s *Storage) GetSongLyrics(id int64, pagination models.Pagination) ([]strin
 		couplets = append(couplets, couplet)
 	}
 
-	// Пагинация
 	start := (pagination.PageNum - 1) * pagination.LimitNum
 	if start > len(couplets) {
 		return nil, nil
@@ -137,6 +136,53 @@ func (s *Storage) GetSongLyrics(id int64, pagination models.Pagination) ([]strin
 	}
 
 	return couplets[start:end], nil
+}
+
+func (s *Storage) GetSongsWithFilter(filter models.SongFilter) ([]models.Song, error) {
+	const op = "storage.postgresql.GetSongsWithFilter"
+
+	query := "SELECT id, group_name, song, release_date, text, link, created_at FROM songs WHERE 1=1"
+	args := []interface{}{}
+	argID := 1
+
+	if filter.Group != "" {
+		query += fmt.Sprintf(" AND group_name = $%d", argID)
+		args = append(args, filter.Group)
+		argID++
+	}
+	if filter.Song != "" {
+		query += fmt.Sprintf(" AND song = $%d", argID)
+		args = append(args, filter.Song)
+		argID++
+	}
+	if filter.ReleaseDate != "" {
+		query += fmt.Sprintf(" AND release_date = $%d", argID)
+		args = append(args, filter.ReleaseDate)
+		argID++
+	}
+
+	offset := (filter.Pagination.PageNum - 1) * filter.Pagination.LimitNum
+	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argID, argID+1)
+	args = append(args, filter.Pagination.LimitNum, offset)
+
+	rows, err := s.db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", op, err)
+	}
+
+	defer rows.Close()
+
+	var songs []models.Song
+	for rows.Next() {
+		var song models.Song
+		if err := rows.Scan(&song.ID, &song.GroupName, &song.Song,
+			&song.ReleaseDate, &song.Text, &song.Link, &song.CreatedAt); err != nil {
+			return nil, fmt.Errorf("%s: %w", op, err)
+		}
+		songs = append(songs, song)
+	}
+
+	return songs, nil
 }
 
 func (s *Storage) Close() error {
