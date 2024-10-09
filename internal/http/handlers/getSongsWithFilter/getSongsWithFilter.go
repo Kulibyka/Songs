@@ -8,6 +8,15 @@ import (
 	"net/http"
 )
 
+// GetSongsWithFilterHandler @Summary Получить песни с фильтрацией
+// @Description Получает песни по заданным фильтрам с пагинацией
+// @Param group_name query string false "Название группы"
+// @Param song query string false "Название песни"
+// @Param release_date query string false "Дата выхода песни"
+// @Param pagination query models.Pagination false "Параметры пагинации"
+// @Success 200 {array} models.Song "Filtered songs"
+// @Failure 400 {string} string "Invalid request parameters"
+// @Router /songs/filter [get]
 func GetSongsWithFilterHandler(db *postgresql.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var filter models.SongFilter

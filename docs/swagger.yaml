@@ -1,0 +1,123 @@
+definitions:
+  models.Song:
+    properties:
+      created_at:
+        type: string
+      group_name:
+        type: string
+      id:
+        type: integer
+      link:
+        type: string
+      release_date:
+        type: string
+      song:
+        type: string
+      text:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /songs/delete/{id}:
+    delete:
+      description: Удаляет песню из библиотеки по ID
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: Song deleted
+          schema:
+            type: string
+        "404":
+          description: Song not found
+          schema:
+            type: string
+  /songs/filter:
+    get:
+      description: Получает песни по заданным фильтрам с пагинацией
+      parameters:
+      - description: Название группы
+        in: query
+        name: group_name
+        type: string
+      - description: Название песни
+        in: query
+        name: song
+        type: string
+      - description: Дата выхода песни
+        in: query
+        name: release_date
+        type: string
+      - description: Количество элементов на странице
+        in: query
+        name: limit_num
+        type: integer
+      - description: Номер страницы
+        in: query
+        name: page_num
+        type: integer
+      responses:
+        "200":
+          description: Filtered songs
+          schema:
+            items:
+              $ref: '#/definitions/models.Song'
+            type: array
+        "400":
+          description: Invalid request parameters
+          schema:
+            type: string
+  /songs/songtext/{id}:
+    get:
+      description: Получает текст песни с разбивкой на куплеты по ID
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: Couplets of the song
+          schema:
+            items:
+              type: string
+            type: array
+        "404":
+          description: Song not found
+          schema:
+            type: string
+  /songs/update/{id}:
+    patch:
+      description: Обновляет данные песни по ID
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Обновленные данные песни
+        in: body
+        name: song
+        required: true
+        schema:
+          $ref: '#/definitions/models.Song'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Song'
+        "400":
+          description: Invalid request body
+          schema:
+            type: string
+        "404":
+          description: Song not found
+          schema:
+            type: string
+swagger: "2.0"

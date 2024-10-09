@@ -8,6 +8,12 @@ import (
 	"strconv"
 )
 
+// DeleteSongHandler @Summary Удалить песню
+// @Description Удаляет песню из библиотеки по ID
+// @Param id path int true "ID песни"
+// @Success 204 {string} string "Song deleted"
+// @Failure 404 {string} string "Song not found"
+// @Router /songs/delete/{id} [delete]
 func DeleteSongHandler(db *postgresql.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)

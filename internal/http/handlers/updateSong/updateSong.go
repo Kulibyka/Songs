@@ -10,6 +10,14 @@ import (
 	"strconv"
 )
 
+// UpdateSongHandler @Summary Обновить данные песни
+// @Description Обновляет данные песни по ID
+// @Param id path int true "ID песни"
+// @Param song body models.Song true "Обновленные данные песни"
+// @Success 200 {object} models.Song
+// @Failure 400 {string} string "Invalid request body"
+// @Failure 404 {string} string "Song not found"
+// @Router /songs/update/{id} [patch]
 func UpdateSongHandler(db *postgresql.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)

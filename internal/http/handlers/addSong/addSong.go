@@ -8,6 +8,16 @@ import (
 	"net/http"
 )
 
+// AddSongHandler @Summary Добавить песню
+//
+//	// @Description Добавляет новую песню в библиотеку
+//	// @Accept  json
+//	// @Produce  json
+//	// @Param song body models.Song true "Данные песни"
+//	// @Success 201 {object} models.Song
+//	// @Failure 400 {string} string "Invalid request body"
+//	// @Failure 500 {string} string "Failed to create song"
+//	// @Router /songs/add [post]
 func AddSongHandler(db *postgresql.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var song models.Song

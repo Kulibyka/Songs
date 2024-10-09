@@ -9,6 +9,12 @@ import (
 	"strconv"
 )
 
+// GetSongCouplets @Summary Получить текст песни
+// @Description Получает текст песни с разбивкой на куплеты по ID
+// @Param id path int true "ID песни"
+// @Success 200 {array} string "Couplets of the song"
+// @Failure 404 {string} string "Song not found"
+// @Router /songs/songtext/{id} [get]
 func GetSongCouplets(db *postgresql.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
